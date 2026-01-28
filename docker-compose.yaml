@@ -1,0 +1,14 @@
+version: "3"
+services:
+  integracao_reportit_php:
+    container_name: integracao_reportit_php
+    build:
+      context: "./.docker"
+      dockerfile: Dockerfile
+    ports:
+      - "9001:9000" # fpm
+      - "5173:5173" # vite
+    volumes:
+      - "./.:/var/www/html"
+
+ 
