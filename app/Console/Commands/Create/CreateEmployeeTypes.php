@@ -49,7 +49,7 @@ class CreateEmployeeTypes  extends Command
         foreach ($typeEmployee as $type) {
 
             $body = [
-                "companyId"   => 1,
+                "companyId"   => (int) ENV('API_COMPANY_ID'),
                 "title" => $type['title']
             ];
 
