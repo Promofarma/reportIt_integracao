@@ -7,16 +7,16 @@ use Illuminate\Console\Command;
 use App\Http\Headers;
 use App\Console\UrlBase;
 use GuzzleHttp\Client;
-use App\Models\RegisteredDepartments;
-use App\Models\RegisteredPositions;
+use App\Models\RegisteredCompany;
 use App\Models\Logs;
 
-class RecoverPositions  extends Command
+
+class RecoverCompany  extends Command
 {
 
-    protected $signature = "report:recoverpositions";
+    protected $signature = "report:recovercompany";
 
-    protected $description = "Comando para recuperar departamentos na API Report It";
+    protected $description = "Comando para recuperar a empresa na API Report It";
 
     public function getUrlBase()
     {
@@ -29,9 +29,7 @@ class RecoverPositions  extends Command
         $client = new Client();
         $headers = HEaders::getHeaders();
         $url_base = $this->getUrlBase();
-
-
-        $command = "positions/getAll";
+        $command = "companyworkplaces/getAll";
         $urlCompleta = $url_base . $command;
 
 
@@ -42,20 +40,24 @@ class RecoverPositions  extends Command
 
             $response = json_decode($res->getBody()->getContents(), true);
 
+            foreach ($response as $company) {
 
-            foreach ($response as $positions) {
+        
+                RegisteredCompany::saveCompany($company['id'], $company['companyId'], $company['name'], $company['document']);
 
-                RegisteredPositions::savePositions($positions['id'], $positions['companyId'], $positions['code'], $positions['title'], $positions['description'], $positions['insertDateTime']);
+                 Logs::createLog($command . " - " . $company['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+
+               
             }
-
-
-            $this->info('Cargos recuperados com sucesso!');
+            
+          
+            $this->info('Companhias recuperadas com sucesso!');
         } catch (\GuzzleHttp\Exception\ClientException $e) {
 
-            Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+            Logs::createLog($command . " - " . $company['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
 
             $this->error(
-                "Erro ao salvar cargos {$positions['title']}: " .
+                "Erro ao salvar companhias {$company['name']}: " .
                     $e->getResponse()->getBody()->getContents()
             );
         }

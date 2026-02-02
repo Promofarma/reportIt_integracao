@@ -74,11 +74,11 @@ class updatePositions extends Command
 
                 $response = json_decode($res->getBody()->getContents(), true);
                 Logs::createLog($command . " - " . $updatePositions['descricao'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
-                $this->info("Departamento atualizado: {$updatePositions['descricao']}");
+                $this->info("cargos atualizado: {$updatePositions['descricao']}");
             } catch (\GuzzleHttp\Exception\ClientException $e) {
                 Logs::createLog($command . " - " . $updatePositions['descricao'], "erro", date_format(now(), 'd-m-Y H:i:s'));
                 $this->error(
-                    "Erro ao enviar departamento {$updatePositions['descricao']}: " .
+                    "Erro ao atualizar cargos {$updatePositions['descricao']}: " .
                         $e->getResponse()->getBody()->getContents()
                 );
             }

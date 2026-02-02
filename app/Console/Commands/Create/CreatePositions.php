@@ -64,7 +64,7 @@ class CreatePositions extends Command
 
        Logs::createLog($command. " - " . $position->DESCRICAO, "sucess", date_format(now(), 'd-m-Y H:i:s'));
 
-        $this->info("Departamento enviado: {$position->DESCRICAO}");
+        $this->info("cargos criados: {$position->DESCRICAO}");
 
     } catch (\GuzzleHttp\Exception\ClientException $e) {
 
@@ -72,7 +72,7 @@ class CreatePositions extends Command
      Logs::createLog($command. " - " . $position->DESCRICAO, "erro", date_format(now(), 'd-m-Y H:i:s'));
 
         $this->error(
-            "Erro ao enviar departamento {$position->DESCRICAO}: " .
+            "Erro ao enviar cargos {$position->DESCRICAO}: " .
             $e->getResponse()->getBody()->getContents()
         );
     }

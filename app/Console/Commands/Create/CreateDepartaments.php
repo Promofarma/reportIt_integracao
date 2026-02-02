@@ -37,7 +37,7 @@ class CreateDepartaments extends Command
 
 
         $departamentsModel = new Departments();
-        $departaments = $departamentsModel->getDepartaments()->where('OBJETO_CONTROLE', '=', '1009');
+        $departaments = $departamentsModel->getDepartaments();
 
       
 

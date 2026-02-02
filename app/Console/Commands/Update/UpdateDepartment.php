@@ -98,7 +98,7 @@ class UpdateDepartment extends Command
                 Logs::createLog($command . " - " . $updateDepartament['descricao'], "erro", date_format(now(), 'd-m-Y H:i:s'));
 
                 $this->error(
-                    "Erro ao enviar departamento {$updateDepartament['descricao']}: " .
+                    "Erro ao atualizar departamento {$updateDepartament['descricao']}: " .
                         $e->getResponse()->getBody()->getContents()
                 );
             }

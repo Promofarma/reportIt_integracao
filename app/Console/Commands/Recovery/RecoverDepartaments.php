@@ -51,7 +51,7 @@ class RecoverDepartaments  extends Command
             Logs::createLog($command . " - " . $departament['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
 
             $this->error(
-                "Erro ao enviar departamento {$departament['name']}: " .
+                "Erro ao salvar departamento {$departament['name']}: " .
                     $e->getResponse()->getBody()->getContents()
             );
         }
