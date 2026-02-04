@@ -46,6 +46,8 @@ class RecoverDepartaments  extends Command
                 Logs::createLog($command . " - " . $departament['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
             }
             $this->info('Departamentos recuperados com sucesso!');
+
+           
         } catch (\GuzzleHttp\Exception\ClientException $e) {
 
             Logs::createLog($command . " - " . $departament['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
@@ -55,5 +57,7 @@ class RecoverDepartaments  extends Command
                     $e->getResponse()->getBody()->getContents()
             );
         }
+
+         return 0;
     }
 }
