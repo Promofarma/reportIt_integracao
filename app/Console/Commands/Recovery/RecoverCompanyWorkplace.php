@@ -7,14 +7,14 @@ use Illuminate\Console\Command;
 use App\Http\Headers;
 use App\Console\UrlBase;
 use GuzzleHttp\Client;
-use App\Models\RegisteredCompany;
+use App\Models\RegisteredCompanyWorkplace;
 use App\Models\Logs;
 
 
-class RecoverCompany  extends Command
+class RecoverCompanyWorkplace  extends Command
 {
 
-    protected $signature = "report:recovercompany";
+    protected $signature = "report:recovercompanyworkplace";
 
     protected $description = "Comando para recuperar a empresa na API Report It";
 
@@ -27,7 +27,7 @@ class RecoverCompany  extends Command
     public function handle()
     {
         $client = new Client();
-        $headers = HEaders::getHeaders();
+        $headers = Headers::getHeaders();
         $url_base = $this->getUrlBase();
         $command = "companyworkplaces/getAll";
         $urlCompleta = $url_base . $command;
@@ -43,7 +43,7 @@ class RecoverCompany  extends Command
             foreach ($response as $company) {
 
         
-                RegisteredCompany::saveCompany($company['id'], $company['companyId'], $company['name'], $company['document']);
+                RegisteredCompanyWorkplace::saveCompany($company['id'], $company['companyId'], $company['name'], $company['document']);
 
                  Logs::createLog($command . " - " . $company['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
 
@@ -51,13 +51,13 @@ class RecoverCompany  extends Command
             }
             
           
-            $this->info('Companhias recuperadas com sucesso!');
+            $this->info('Estabelecimentos recuperadas com sucesso!');
         } catch (\GuzzleHttp\Exception\ClientException $e) {
 
             Logs::createLog($command . " - " . $company['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
 
             $this->error(
-                "Erro ao salvar companhias {$company['name']}: " .
+                "Erro ao salvar Estabelecimentos {$company['name']}: " .
                     $e->getResponse()->getBody()->getContents()
             );
         }

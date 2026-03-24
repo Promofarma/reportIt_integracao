@@ -57,6 +57,19 @@ class RegisteredEmployees extends Model
     }
 
 
+    public function getEmployeesUser(){
+
+
+        return $this->select(
+                'CPF AS LOGIN',
+                'CPF AS PASSWORD',
+                'NAME',
+                'ID_REPORT_IT AS EMPLOYEE_ID'
+
+            )->get();
+        
+    }    
+
 
 
 }

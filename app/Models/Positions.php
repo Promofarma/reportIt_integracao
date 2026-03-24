@@ -35,7 +35,7 @@ class Positions extends Model
 
     public static function getPositionsAll(){
 
-      return static::query()->select('cargo_folha', 'descricao')
+      return static::query()->select('cargo_folha', 'descricao', 'CBO')
             ->whereIn(
                 'cargos_folha.cargo_folha',
                 DB::table('lg_importa_funcionarios')
@@ -54,4 +54,8 @@ class Positions extends Model
         ->toArray();
 
     }
+
+
+    
+
 }

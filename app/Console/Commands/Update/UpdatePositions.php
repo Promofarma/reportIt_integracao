@@ -34,36 +34,50 @@ class updatePositions extends Command
     public function handle()
     {
         $allPositions = $this->getAllPositions();
-        $registeredPositions = $this->getPositionsRegister()->keyBy('ID_POSITION');  
+        $registeredPositions = $this->getPositionsRegister()->keyBy('ID_POSITION');
+
+
+
         $positionsDivergentes = $allPositions
             ->filter(function ($item) use ($registeredPositions) {
-                return $registeredPositions->has($item->cargo_folha)
-                    && trim($item->descricao) !== trim(
-                        $registeredPositions[$item->cargo_folha]->NAME
-                    );
+
+                if (!$registeredPositions->has($item->cargo_folha)) {
+                    return false;
+                }
+
+                $registered = $registeredPositions[$item->cargo_folha];
+
+
+                return trim($item->descricao) !== trim($registered->NAME)
+                    || $registered->CBO !== $item->CBO;
             })
             ->map(function ($item) use ($registeredPositions) {
                 $registered = $registeredPositions[$item->cargo_folha];
-                return [
 
-                    'company_id'        => $registered->COMPANY_ID,
-                    'id_report_it'      => $registered->ID_REPORT_IT,
-                    'cargo_folha'   => $item->cargo_folha,
-                    'descricao'     => $item->descricao
+                return [
+                    'company_id'   => $registered->COMPANY_ID,
+                    'id_report_it' => $registered->ID_REPORT_IT,
+                    'cargo_folha'  => $item->cargo_folha,
+                    'descricao'    => $item->descricao,
+                    'CBO'          => $item->CBO
                 ];
             });
+
+
+
         $client = new Client();
         $header = Headers::getHeaders();
         $url_base = $this->getUrlBase();
         $command = "positions/update";
         $urlCompleta = $url_base . $command;
         foreach ($positionsDivergentes as $updatePositions) {
-             $body = [
+            $body = [
                 "id" => $updatePositions['id_report_it'],
                 "companyId" => $updatePositions['company_id'],
                 "code" => $updatePositions['cargo_folha'],
                 "title" => $updatePositions['descricao'],
                 "description" => $updatePositions['descricao'],
+                "cboCode" => $updatePositions['CBO']
             ];
             try {
                 $res = $client->put($urlCompleta, [
@@ -76,6 +90,7 @@ class updatePositions extends Command
                 Logs::createLog($command . " - " . $updatePositions['descricao'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
                 $this->info("cargos atualizado: {$updatePositions['descricao']}");
             } catch (\GuzzleHttp\Exception\ClientException $e) {
+
                 Logs::createLog($command . " - " . $updatePositions['descricao'], "erro", date_format(now(), 'd-m-Y H:i:s'));
                 $this->error(
                     "Erro ao atualizar cargos {$updatePositions['descricao']}: " .

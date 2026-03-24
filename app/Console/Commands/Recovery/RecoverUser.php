@@ -7,16 +7,15 @@ use Illuminate\Console\Command;
 use App\Http\Headers;
 use App\Console\UrlBase;
 use GuzzleHttp\Client;
-use App\Models\RegisteredDepartments;
-use App\Models\RegisteredPositions;
+use App\Models\Users;
 use App\Models\Logs;
 
-class RecoverPositions  extends Command
+class RecoverUser  extends Command
 {
 
-    protected $signature = "report:recoverpositions";
+    protected $signature = "report:recoveruser";
 
-    protected $description = "Comando para recuperar departamentos na API Report It";
+    protected $description = "Comando para recuperar usuários na API Report It";
 
     public function getUrlBase()
     {
@@ -31,7 +30,7 @@ class RecoverPositions  extends Command
         $url_base = $this->getUrlBase();
 
 
-        $command = "positions/getAll";
+        $command = "users/getAll/true/false";
         $urlCompleta = $url_base . $command;
 
 
@@ -41,18 +40,18 @@ class RecoverPositions  extends Command
             ]);
 
             $response = json_decode($res->getBody()->getContents(), true);
-            foreach ($response as $positions) {
-                RegisteredPositions::savePositions($positions['id'], $positions['companyId'], $positions['code'], $positions['title'], $positions['description'], $positions['insertDateTime'], $positions['cboCode']);
-            }
 
+           Users::saveUsers($response);
 
             $this->info('Cargos recuperados com sucesso!');
         } catch (\GuzzleHttp\Exception\ClientException $e) {
 
-            Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+            dd($e);
+
+           // Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
 
             $this->error(
-                "Erro ao salvar cargos {$positions['title']}: " .
+                "Erro ao salvar cargos : " .
                     $e->getResponse()->getBody()->getContents()
             );
         }

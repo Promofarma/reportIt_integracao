@@ -6,8 +6,7 @@ services:
       context: "./.docker"
       dockerfile: Dockerfile
     ports:
-      - "9001:9000" # fpm
-      - "5173:5173" # vite
+      - "9002:9000" # fpm
     volumes:
       - "./.:/var/www/html"
 

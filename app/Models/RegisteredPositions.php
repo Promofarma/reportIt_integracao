@@ -23,18 +23,21 @@ class RegisteredPositions extends Model
         'ID_POSITION',
         'NAME',
         'DESCRIPTION',
-        'CREATE_DATE'
+        'CREATE_DATE',
+        'CBO'
     ];
 
 
     public $timestamps = false;
 
 
-    public static function savePositions($idreportIt, $companyId, $idPositions, $name, $description, $createDate) :void
+    public static function savePositions($idreportIt, $companyId, $idPositions, $name, $description, $createDate, $cbo) :void
     {
             self::UpdateOrcreate(
             [
                'ID_REPORT_IT' => $idreportIt,
+               'NAME' => $name,
+               'CBO' => $cbo
             ]    ,
             
             [
@@ -42,7 +45,8 @@ class RegisteredPositions extends Model
                 'ID_POSITION' => $idPositions,
                 'NAME' => $name,
                 'DESCRIPTION' => $description,
-                'CREATE_DATE' => $createDate
+                'CREATE_DATE' => $createDate,
+                'CBO' => $cbo
             ]);
     }
 
