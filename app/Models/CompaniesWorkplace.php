@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\RegisteredDepartments;
+use App\Models\RegisteredCompanyWorkplace;
 
 class CompaniesWorkplace extends Companies
 {
+
+    protected $connection = 'sqlsrv';
 
     public function getCompaniesToRegister()
     {
@@ -19,21 +21,8 @@ class CompaniesWorkplace extends Companies
     }
 
    
-    public static function getAllCompanies()
-    {
-       
-        return self::query()
-            ->select(
-                'EMPRESAS_USUARIAS.EMPRESA_USUARIA',
-                'PESSOAS_JURIDICAS.INSCRICAO_FEDERAL',
-                'EMPRESAS_USUARIAS.NOME',
-            )
-            ->leftJoin('PESSOAS_JURIDICAS', 'EMPRESAS_USUARIAS.ENTIDADE', '=', 'PESSOAS_JURIDICAS.ENTIDADE')
-            ->get();
-    }
-
     public static function getAllCompaniesRegistered()
     {
-        return RegisteredDepartments::all();
+        return RegisteredCompanyWorkplace::all();
     }
 }

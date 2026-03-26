@@ -33,7 +33,7 @@ class RecoverDepartaments  extends Command
         $urlCompleta = $url_base . $command;
 
 
-        try {
+    
             $res = $client->get($urlCompleta, [
                 'headers' => $headers
             ]);
@@ -42,22 +42,21 @@ class RecoverDepartaments  extends Command
 
             foreach ($response as $departament) {
 
-                RegisteredDepartments::saveDeparments($departament['id'], $departament['companyId'], $departament['code'], $departament['name'], $departament['description'], $departament['insertDateTime']);
-                Logs::createLog($command . " - " . $departament['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+                try {
+                    RegisteredDepartments::saveDeparments($departament['id'], $departament['companyId'], $departament['code'], $departament['name'], $departament['description'], $departament['insertDateTime']);
+                    Logs::createLog($command . " - " . $departament['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+                    $this->info('Departamentos recuperados com sucesso!');
+                } catch (\GuzzleHttp\Exception\ClientException $e) {
+                    Logs::createLog($command . " - " . $departament['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+
+                    $this->error(
+                        "Erro ao salvar departamento {$departament['name']}: " .
+                            $e->getResponse()->getBody()->getContents()
+                    );
+                }
             }
-            $this->info('Departamentos recuperados com sucesso!');
+       
 
-           
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-
-            Logs::createLog($command . " - " . $departament['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
-
-            $this->error(
-                "Erro ao salvar departamento {$departament['name']}: " .
-                    $e->getResponse()->getBody()->getContents()
-            );
-        }
-
-         return 0;
+        return 0;
     }
 }

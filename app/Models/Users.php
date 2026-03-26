@@ -74,7 +74,7 @@ public static function saveUsers($dados)
                 'NAME'                 => $usuario['name'] ?? null,
                 'EMAIL'                => $usuario['email'] ?? null,
                 'PERFIL'               => $usuario['perfil'] ?? 'client',
-                'ENABLE'               => $usuario['enabled'] ?? 1,
+                'ENABLE'               => $usuario['enabled'] ?? 0,
                 'IS_SESMT'             => $usuario['isSESMT'] ?? 0,
                 'IS_CIPA'              => $usuario['isCIPA'] ?? 0,
                 'IS_EMPLOYEE'          => $usuario['isEmployee'] ?? 0,

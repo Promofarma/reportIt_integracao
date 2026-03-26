@@ -41,17 +41,14 @@ class RecoverUser  extends Command
 
             $response = json_decode($res->getBody()->getContents(), true);
 
-           Users::saveUsers($response);
+            Users::saveUsers($response);
 
-            $this->info('Cargos recuperados com sucesso!');
+            $this->info('Usuários recuperados com sucesso!');
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-
-            dd($e);
-
-           // Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+            Logs::createLog($command . " - " . "Usuarios não recuperados", "erro", date_format(now(), 'd-m-Y H:i:s'));
 
             $this->error(
-                "Erro ao salvar cargos : " .
+                "Erro ao salvar usuários : " .
                     $e->getResponse()->getBody()->getContents()
             );
         }

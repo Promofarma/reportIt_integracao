@@ -42,22 +42,26 @@ class RecoverCompanyWorkplace  extends Command
 
             foreach ($response as $company) {
 
-        
-                RegisteredCompanyWorkplace::saveCompany($company['id'], $company['companyId'], $company['name'], $company['document']);
 
-                 Logs::createLog($command . " - " . $company['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+                try {
+                    RegisteredCompanyWorkplace::saveCompany($company['id'], $company['companyId'], $company['name'], $company['document']);
 
-               
+                    Logs::createLog($command . " - " . $company['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+
+                    $this->info('Estabelecimentos recuperadas com sucesso!');
+                } catch (\GuzzleHttp\Exception\ClientException $th) {
+                    Logs::createLog($command . " - " . $company['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+
+                    $this->error(
+                        "Erro ao salvar Estabelecimentos {$company['name']}: " .
+                            $th->getResponse()->getBody()->getContents()
+                    );
+                }
             }
-            
-          
-            $this->info('Estabelecimentos recuperadas com sucesso!');
         } catch (\GuzzleHttp\Exception\ClientException $e) {
 
-            Logs::createLog($command . " - " . $company['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
-
             $this->error(
-                "Erro ao salvar Estabelecimentos {$company['name']}: " .
+                "Erro na requisição " .
                     $e->getResponse()->getBody()->getContents()
             );
         }

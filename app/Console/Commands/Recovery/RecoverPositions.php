@@ -35,26 +35,27 @@ class RecoverPositions  extends Command
         $urlCompleta = $url_base . $command;
 
 
-        try {
-            $res = $client->get($urlCompleta, [
-                'headers' => $headers
-            ]);
 
-            $response = json_decode($res->getBody()->getContents(), true);
-            foreach ($response as $positions) {
+        $res = $client->get($urlCompleta, [
+            'headers' => $headers
+        ]);
+
+        $response = json_decode($res->getBody()->getContents(), true);
+        foreach ($response as $positions) {
+
+            try {
                 RegisteredPositions::savePositions($positions['id'], $positions['companyId'], $positions['code'], $positions['title'], $positions['description'], $positions['insertDateTime'], $positions['cboCode']);
+
+                $this->info('Cargos recuperados com sucesso!');
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+
+                Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+
+                $this->error(
+                    "Erro ao salvar cargos {$positions['title']}: " .
+                        $e->getResponse()->getBody()->getContents()
+                );
             }
-
-
-            $this->info('Cargos recuperados com sucesso!');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-
-            Logs::createLog($command . " - " . $positions['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
-
-            $this->error(
-                "Erro ao salvar cargos {$positions['title']}: " .
-                    $e->getResponse()->getBody()->getContents()
-            );
         }
     }
 }

@@ -33,28 +33,30 @@ class RecoverEmployeeTypes  extends Command
         $urlCompleta = $url_base . $command;
 
 
-        try {
-            $res = $client->get($urlCompleta, [
-                'headers' => $headers
-            ]);
 
-            $response = json_decode($res->getBody()->getContents(), true);
+        $res = $client->get($urlCompleta, [
+            'headers' => $headers
+        ]);
 
-            foreach ($response as $employeetype) {
+        $response = json_decode($res->getBody()->getContents(), true);
 
-               RegisteredEmployeeTypes::saveEmployeeTypes($employeetype['id'], $employeetype['companyId'], $employeetype['title'], $employeetype['insertDateTime']);
+        foreach ($response as $employeetype) {
+
+            try {
+                RegisteredEmployeeTypes::saveEmployeeTypes($employeetype['id'], $employeetype['companyId'], $employeetype['title'], $employeetype['insertDateTime']);
 
                 Logs::createLog($command . " - " . $employeetype['title'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+
+                $this->info('Tipos de funcionários recuperados com sucesso!');
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+
+                Logs::createLog($command . " - " . $employeetype['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+
+                $this->error(
+                    "Erro ao salvar tipo de funcionário {$employeetype['title']}: " .
+                        $e->getResponse()->getBody()->getContents()
+                );
             }
-            $this->info('Tipos de funcionários recuperados com sucesso!');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-
-            Logs::createLog($command . " - " . $employeetype['title'], "erro", date_format(now(), 'd-m-Y H:i:s'));
-
-            $this->error(
-                "Erro ao salvar tipo de funcionário {$employeetype['title']}: " .
-                    $e->getResponse()->getBody()->getContents()
-            );
         }
     }
 }

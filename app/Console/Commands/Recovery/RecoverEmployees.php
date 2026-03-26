@@ -33,31 +33,29 @@ class RecoverEmployees  extends Command
         $urlCompleta = $url_base . $command;
 
 
-        try {
-            $res = $client->get($urlCompleta, [
-                'headers' => $headers
-            ]);
 
-            $response = json_decode($res->getBody()->getContents(), true);
+        $res = $client->get($urlCompleta, [
+            'headers' => $headers
+        ]);
 
-       
+        $response = json_decode($res->getBody()->getContents(), true);
 
-            foreach ($response as $employees) {
 
+
+        foreach ($response as $employees) {
+            try {
                 RegisteredEmployees::saveEmployees($employees['id'], $employees['companyId'],  $employees['departmentId'], $employees['positionId'], $employees['type'], $employees['companyWorkPlaceId'], $employees['cpf'], $employees['name'], $employees['insertDateTime'], $employees['updateDateTime']);
                 Logs::createLog($command . " - " . $employees['name'], "sucess", date_format(now(), 'd-m-Y H:i:s'));
+                $this->info('Funcionários recuperados com sucesso!');
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+
+                Logs::createLog($command . " - " . $employees['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
+
+                $this->error(
+                    "Erro ao salvar funcionário {$employees['name']}: " .
+                        $e->getResponse()->getBody()->getContents()
+                );
             }
-            $this->info('Funcionários recuperados com sucesso!');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-
-            
-
-            Logs::createLog($command . " - " . $employees['name'], "erro", date_format(now(), 'd-m-Y H:i:s'));
-
-            $this->error(
-                "Erro ao salvar funcionário {$employees['name']}: " .
-                    $e->getResponse()->getBody()->getContents()
-            );
         }
     }
 }
