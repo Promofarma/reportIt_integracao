@@ -38,8 +38,11 @@ class CreateUser extends Command
         $usersBase = new Users();
         $users = $usersBase->getUsers();
 
-     
+      foreach ($users as $user) {
 
+        dd($user);
+
+      }  
       
       foreach ($users as $user) {
 
@@ -75,7 +78,8 @@ class CreateUser extends Command
 
     } catch (\GuzzleHttp\Exception\ClientException $e) {
 
-
+     
+       
      Logs::createLog($command. " - " . $user->NAME, "erro", date_format(now(), 'd-m-Y H:i:s'));
 
         $this->error(

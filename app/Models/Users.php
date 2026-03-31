@@ -20,47 +20,36 @@ class Users extends Model
 
     public function getUsers()
     {
-        $usersRegistered = $this->getUsersBase();
-        $usersBase = $this->getEmployeesBase()->whereNotIn('EMPLOYEE_ID', $usersRegistered->pluck('EMPLOYEE_ID'));
+        $usersRegisteredIds = $this->getUsersBase()->pluck('LOGIN')->filter()->toArray();
+
+        
+
+        $usersBase = $this->getEmployeesBaseQuery()
+            ->whereNotIn('CPF', $usersRegisteredIds)
+            ->get();
+
         return $usersBase;
     }
 
 
-    public function getUsersBase(){
-
-            return $this->select(
-                    'ID',
-                    'ID_USER',
-                    'LOGIN',
-                    'PERFIL',
-                    'NAME',
-                    'EMAIL',
-                    'ENABLE',
-                    'IS_SESMT',
-                    'IS_CIPA',
-                    'IS_EMPLOYEE',
-                    'IS_COMMITTEE_MEMBER',
-                    'IS_ADMIN',
-                    'EMPLOYEE_ID',
-                    'REQUIRE_NEW_PASSWORD',
-                    'LAST_ACCESS',
-                    'VALIDATION_CODE',
-                    'SSO_KEY',
-                    'SSO_EXPIRE_DATE_TIME',
-                    'INSERT_DATE_TIME',
-                    'UPDATE_DATE_TIME',
-                )->get();
+    public function getUsersBase()
+    {
+        return $this->select('LOGIN')->get();
     }
 
-       public function getEmployeesBase(){
+    public function getEmployeesBaseQuery()
+    {
+        return RegisteredEmployees::query()->select(
+            'CPF AS LOGIN',
+            'CPF AS PASSWORD',
+            'NAME',
+            'ID_REPORT_IT AS EMPLOYEE_ID'
+        );
+    }
 
-            return RegisteredEmployees::query()->select(
-                      
-                    'CPF AS LOGIN',
-                    'CPF AS PASSWORD',
-                    'NAME',
-                    'ID_REPORT_IT AS EMPLOYEE_ID'
-                )->get();
+     public function getEmployeesBase()
+    {
+        return $this->getEmployeesBaseQuery()->get();
     }
 
 
