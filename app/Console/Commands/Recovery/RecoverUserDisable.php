@@ -13,7 +13,7 @@ use App\Models\Logs;
 class RecoverUserDisable  extends Command
 {
 
-    protected $signature = "report:recoveruser";
+    protected $signature = "report:recoveruserdisable";
 
     protected $description = "Comando para recuperar usuários desabilitados na API Report It";
 
