@@ -28,19 +28,20 @@ class UpdateEmployees extends Command
 
     public function handle()
     {
-        $employeesOutdated = $this->updateEmployees()->whereNotNull('ID_REPORT_IT');
+        $employeesOutdated = $this->updateEmployees()->sortBy('NOME');
         $client = new Client();
         $header = Headers::getHeaders();
         $url_base = $this->getUrlBase();
         $command = "employees/update";
         $urlCompleta = $url_base . $command;
 
-      
+     
+       
 
         foreach ($employeesOutdated as $employees) {
           $body = [
-                   "id"                 => $employees->ID_REPORT_IT,
-                   "companyId"          => $employees->COMPANY_ID,
+                    "id"                 => $employees->ID_REPORT_IT,
+                    "companyId"          => $employees->COMPANY_ID,
                     "cpf"                => (string) $employees->INSCRICAO_FEDERAL,
                     "name"               => $employees->NOME,
                     "socialName"         => $employees->NOME_SOCIAL,
@@ -55,6 +56,7 @@ class UpdateEmployees extends Command
                     "gender"             => $employees->SEXO,
                     "email"              => $employees->E_MAIL,
                     "civilState"         => $employees->ESTADO_CIVIL,
+                    "educationLevel"     => $employees->GRAU_INSTRUCAO,
                     "cep"                => $employees->CEP,
                     "placeAddress"       => $employees->ENDERECO,
                     "placeNumber"        => $employees->NUMERO,    
@@ -73,6 +75,8 @@ class UpdateEmployees extends Command
 
                 ]);
                 $response = json_decode($res->getBody()->getContents(), true);
+
+             
 
                 Logs::createLog($command . " - " . $employees->NOME, "sucess", date_format(now(), 'd-m-Y H:i:s'));
                 $this->info("Funcionário atualizado: {$employees->NOME}");

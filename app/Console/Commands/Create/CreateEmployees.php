@@ -60,6 +60,7 @@ class CreateEmployees extends Command
                 "gender"                 => $employees->SEXO,
                 "email"                  => $employees->E_MAIL,
                 "civilState"             => $employees->ESTADO_CIVIL,
+                "educationLevel"         => $employees->GRAU_INSTRUCAO,
                 "cep"                    => $employees->CEP,
                 "placeAddress"           => $employees->ENDERECO,
                 "placeNumber"            => $employees->NUMERO,
