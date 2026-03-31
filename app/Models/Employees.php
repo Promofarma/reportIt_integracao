@@ -30,13 +30,29 @@ class Employees extends Model
     public function getEmployeesBase(){
 
             return $this->select(
-                    'COMPANY_ID',
+                    'COMPANY_ID',	
                     'NOME',
                     'INSCRICAO_FEDERAL',
-                    'COMPANYWORKPLACEID',
+                    'COMPANYWORKPLACEID',	
                     'DEPARTMENTID',
-                    'POSITIONID',
-                    'TYPE'
+                    'POSITIONID',	
+                    'TYPE',
+                    'DATA_NASCIMENTO',	
+                    'NACIONALIDADE',
+                    'ETNIA_DESCRICAO',	
+                    'DATA_ADMISSAO',
+                    'GRAU_INSTRUCAO',
+                    'SEXO',
+                    'E_MAIL',
+                    'ESTADO_CIVIL',
+                    'CEP',	
+                    'ENDERECO',
+                    'NUMERO',
+                    'COMPLEMENTO',
+                    'BAIRRO',
+                    'ESTADO',
+                    'CIDADE',
+                    'TELEFONE',
                 )->get();
 
     }
@@ -50,8 +66,7 @@ class Employees extends Model
 public function getEmployeesUpdate()
 {
    
-
-    $employeesOutdated = DB::connection('api')->table('VW_EMPLOYEES_OUTDATED')->get();
+    $employeesOutdated = DB::connection('api')->table('VW_EMPLOYEES_OUTDATED')->orderby('INSCRICAO_FEDERAL')->get();
 
     return $employeesOutdated;
 

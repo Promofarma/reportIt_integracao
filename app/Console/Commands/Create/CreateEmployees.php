@@ -38,6 +38,8 @@ class CreateEmployees extends Command
         $EmployeesModel = new Employees();
         $employees = $EmployeesModel->getEmployees();
 
+     
+
  
         foreach ($employees as $employees) {
 
@@ -48,7 +50,21 @@ class CreateEmployees extends Command
             "companyWorkPlaceId" => $employees->COMPANYWORKPLACEID,
             "departmentId" => $employees->DEPARTMENTID,
             "positionId" => $employees->POSITIONID,
-            "type"        => $employees->TYPE 
+            "type"        => $employees->TYPE ,
+            "birthDate"   => $employees->DATA_NASCIMENTO,
+            "birthCountry" => $employees->NACIONALIDADE,
+            "gender"      => $employees->SEXO,
+            "raceColor"   => $employees->ETNIA_DESCRICAO,
+            "civilState"  => $employees->ESTADO_CIVIL,
+            "email"       => $employees->E_MAIL,
+            "phone"       => $employees->TELEFONE,
+            "cep"         => $employees->CEP,
+            "placeAddress" => $employees->ENDERECO,
+            "placeNumber" => $employees->NUMERO,
+            "placeComplement" => $employees->COMPLEMENTO,
+            "placeDistrict" => $employees->BAIRRO,
+            "placeCity" => $employees->CIDADE,
+            "placeState" => $employees->ESTADO
         ];
 
        

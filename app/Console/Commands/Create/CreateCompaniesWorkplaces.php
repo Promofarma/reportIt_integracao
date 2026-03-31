@@ -32,6 +32,7 @@ class CreateCompaniesWorkplaces extends Command
         $companiesModel = new CompaniesWorkplace();
         $companies = $companiesModel->getCompaniesToRegister();
 
+      
          
         foreach ($companies as $companies) {
 
