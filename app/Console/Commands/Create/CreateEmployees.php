@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands\Create;  
 
-use GuzzleHttp\Client;
-use App\Http\Headers;
-use Illuminate\Console\Command;
 use App\Console\UrlBase;
-use App\Models\Logs;
+use App\Http\Headers;
 use App\Models\Employees;
+use App\Models\Logs;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Console\Command;
 
 
 class CreateEmployees extends Command
@@ -39,32 +40,34 @@ class CreateEmployees extends Command
         $employees = $EmployeesModel->getEmployees();
 
      
-
- 
+        
         foreach ($employees as $employees) {
 
         $body = [
-            "companyId"   => $employees->COMPANY_ID,
-            "cpf"        => (string) $employees->INSCRICAO_FEDERAL,
-            "name"        => $employees->NOME,
-            "companyWorkPlaceId" => $employees->COMPANYWORKPLACEID,
-            "departmentId" => $employees->DEPARTMENTID,
-            "positionId" => $employees->POSITIONID,
-            "type"        => $employees->TYPE ,
-            "birthDate"   => $employees->DATA_NASCIMENTO,
-            "birthCountry" => $employees->NACIONALIDADE,
-            "gender"      => $employees->SEXO,
-            "raceColor"   => $employees->ETNIA_DESCRICAO,
-            "civilState"  => $employees->ESTADO_CIVIL,
-            "email"       => $employees->E_MAIL,
-            "phone"       => $employees->TELEFONE,
-            "cep"         => $employees->CEP,
-            "placeAddress" => $employees->ENDERECO,
-            "placeNumber" => $employees->NUMERO,
-            "placeComplement" => $employees->COMPLEMENTO,
-            "placeDistrict" => $employees->BAIRRO,
-            "placeCity" => $employees->CIDADE,
-            "placeState" => $employees->ESTADO
+                    "companyId"          => $employees->COMPANY_ID,
+                    "cpf"                => (string) $employees->INSCRICAO_FEDERAL,
+                    "name"               => $employees->NOME,
+                    "socialName"         => $employees->NOME_SOCIAL,
+                    "companyWorkPlaceId" => $employees->COMPANYWORKPLACEID,
+                    "departmentId"       => $employees->DEPARTMENTID,
+                    "positionId"         => $employees->POSITIONID,
+                    "type"               => $employees->TYPE,
+                    "birthDate"          => Carbon::parse($employees->DATA_NASCIMENTO)->format('d-m-Y'),
+                    "birthCountry"       => $employees->NACIONALIDADE,
+                    "raceColor"          => $employees->ETNIA_DESCRICAO,
+                    "admissionDate"      => Carbon::parse($employees->DATA_ADMISSAO)->format('d-m-Y'),  
+                    "gender"             => $employees->SEXO,
+                    "email"              => $employees->E_MAIL,
+                    "civilState"         => $employees->ESTADO_CIVIL,
+                    "cep"                => $employees->CEP,
+                    "placeAddress"       => $employees->ENDERECO,
+                    "placeNumber"        => $employees->NUMERO,    
+                    "placeComplement"    => $employees->COMPLEMENTO,
+                    "placeDistrict"      => $employees->BAIRRO, 
+                    "placeState"         => $employees->ESTADO,
+                    "placeCity"          => $employees->CIDADE,
+                    "phone"              => $employees->TELEFONE,
+                    "internalRegistrationId" => $employees->matricula,
         ];
 
        

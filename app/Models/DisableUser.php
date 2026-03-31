@@ -19,7 +19,9 @@ class DisableUser extends Model
     {
         return $this->select(
                         'ID',
-                        'NAME'
+                        'NAME',
+                        'EMPLOYEE_ID',
+                        'DATA_RESCISAO'
                     )->get();
     }
 

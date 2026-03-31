@@ -2,21 +2,21 @@
 
 namespace App\Console\Commands\Update;
 
-use Soap\Url;
-use App\Models\Logs;
-use App\Http\Headers;
-use GuzzleHttp\Client;
 use App\Console\UrlBase;
-use App\Models\Positions;
-use Illuminate\Console\Command;
-use App\Models\RegisteredPositions;
+use App\Http\Headers;
 use App\Models\Employees;
+use App\Models\Logs;
+use App\Models\Positions;
+use App\Models\RegisteredPositions;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Console\Command;
+use Soap\Url;
 
 
 class UpdateEmployees extends Command
 {
     protected $signature = "report:updateemployees";
-
     protected $description = "Comando para atualizar os funcionários na API Report It";
 
 
@@ -39,28 +39,28 @@ class UpdateEmployees extends Command
 
         foreach ($employeesOutdated as $employees) {
           $body = [
-                    "id"                 => $employees->ID_REPORT_IT,
-                    "companyId"          => $employees->COMPANY_ID,
+                   "id"                 => $employees->ID_REPORT_IT,
+                   "companyId"          => $employees->COMPANY_ID,
                     "cpf"                => (string) $employees->INSCRICAO_FEDERAL,
                     "name"               => $employees->NOME,
+                    "socialName"         => $employees->NOME_SOCIAL,
                     "companyWorkPlaceId" => $employees->COMPANYWORKPLACEID,
                     "departmentId"       => $employees->DEPARTMENTID,
                     "positionId"         => $employees->POSITIONID,
                     "type"               => $employees->TYPE,
-                    "birthDate"          => $employees->DATA_NASCIMENTO,
+                    "birthDate"          => Carbon::parse($employees->DATA_NASCIMENTO)->format('d-m-Y'),
                     "birthCountry"       => $employees->NACIONALIDADE,
                     "raceColor"          => $employees->ETNIA_DESCRICAO,
-                    "admissionDate"      => $employees->DATA_ADMISSAO,
-                  
+                    "admissionDate"      => Carbon::parse($employees->DATA_ADMISSAO)->format('d-m-Y'),  
                     "gender"             => $employees->SEXO,
                     "email"              => $employees->E_MAIL,
                     "civilState"         => $employees->ESTADO_CIVIL,
                     "cep"                => $employees->CEP,
                     "placeAddress"       => $employees->ENDERECO,
-                    "placeNumber"      => $employees->NUMERO,    
+                    "placeNumber"        => $employees->NUMERO,    
                     "placeComplement"    => $employees->COMPLEMENTO,
-                    "placeDistrict"  => $employees->BAIRRO, 
-                    "placeState"     => $employees->ESTADO,
+                    "placeDistrict"      => $employees->BAIRRO, 
+                    "placeState"         => $employees->ESTADO,
                     "placeCity"          => $employees->CIDADE,
                     "phone"              => $employees->TELEFONE,
                     "internalRegistrationId" => $employees->matricula,
@@ -77,7 +77,7 @@ class UpdateEmployees extends Command
                 Logs::createLog($command . " - " . $employees->NOME, "sucess", date_format(now(), 'd-m-Y H:i:s'));
                 $this->info("Funcionário atualizado: {$employees->NOME}");
             } catch (\GuzzleHttp\Exception\ClientException $e) {
-                dd($e);
+             
 
                 Logs::createLog($command . " - " . $employees->NOME, "erro", date_format(now(), 'd-m-Y H:i:s'));
                 $this->error(

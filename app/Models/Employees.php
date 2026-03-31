@@ -32,6 +32,7 @@ class Employees extends Model
             return $this->select(
                     'COMPANY_ID',	
                     'NOME',
+                    'NOME_SOCIAL',
                     'INSCRICAO_FEDERAL',
                     'COMPANYWORKPLACEID',	
                     'DEPARTMENTID',

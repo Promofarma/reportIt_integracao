@@ -2,13 +2,14 @@
 
 namespace App\Console\Commands\Disable;
 
-use Illuminate\Console\Command;
-use App\Http\Headers;
 use App\Console\UrlBase;
-use GuzzleHttp\Client;
-use App\Models\Users;
+use App\Http\Headers;
 use App\Models\DisableUser as DisableUserModel;
+use App\Models\Users;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Console\Command;
 
 class DisableUser extends Command
 {
@@ -27,8 +28,13 @@ class DisableUser extends Command
         $headers = Headers::getHeaders();
         $url_base = $this->getUrlBase();
 
+        
         $command = "users/disable"; 
         $urlCompleta = $url_base . $command;
+
+
+        $commandUpdate = "employees/update";
+        $urlCompletaUpdate = $url_base . $command;
 
        
         $disableUsers = $this->getDisableUsers();
@@ -53,16 +59,24 @@ class DisableUser extends Command
                 ]);
 
                 $responseBody = $res->getBody()->getContents();
-                
               
-                Users::where('ID_USER', $disableUser->ID)->delete();
+                Users::where('ID_USER', $disableUser->ID)->update(['ENABLE' => 0]);
+
+                $bodyUpdate = [
+                    "id" => $disableUser->ID_REPORT_IT,
+                    "resignationDate" => Carbon::parse($disableUser->DATA_RESCISAO)->format('d-m-Y'),
+                ];
+
+                $resUpdate = $client->put($urlCompletaUpdate, [
+                    'headers' => $headers,
+                    'json'    => $bodyUpdate, 
+                ]);
 
                 $this->info("Usuário {$disableUser->ID} desabilitado com sucesso!");
-            
 
             } catch (GuzzleException $e) {
              
-
+                dd($e);
                 $this->error("Erro ao desabilitar usuário {$disableUser->ID}");
             }
         }

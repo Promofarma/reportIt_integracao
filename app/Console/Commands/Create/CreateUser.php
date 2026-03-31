@@ -38,11 +38,7 @@ class CreateUser extends Command
         $usersBase = new Users();
         $users = $usersBase->getUsers();
 
-      foreach ($users as $user) {
-
-        dd($user);
-
-      }  
+      
       
       foreach ($users as $user) {
 
