@@ -21,14 +21,19 @@ class Users extends Model
     public function getUsers()
     {
         $usersRegisteredIds = $this->getUsersBase()->pluck('LOGIN')->filter()->toArray();
-
-        
+       
 
         $usersBase = $this->getEmployeesBaseQuery()
             ->whereNotIn('CPF', $usersRegisteredIds)
             ->get();
 
         return $usersBase;
+    }
+
+
+    public function getUserDisable()
+    {
+        return $this->where('ENABLE', 0);
     }
 
 
@@ -63,7 +68,7 @@ public static function saveUsers($dados)
                 'NAME'                 => $usuario['name'] ?? null,
                 'EMAIL'                => $usuario['email'] ?? null,
                 'PERFIL'               => $usuario['perfil'] ?? 'client',
-                'ENABLE'               => $usuario['enabled'] ?? 0,
+                'ENABLE'               => $usuario['enabled'] ? 1 : 0,
                 'IS_SESMT'             => $usuario['isSESMT'] ?? 0,
                 'IS_CIPA'              => $usuario['isCIPA'] ?? 0,
                 'IS_EMPLOYEE'          => $usuario['isEmployee'] ?? 0,
