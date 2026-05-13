@@ -36,10 +36,15 @@ class CreateUser extends Command
 
          
         $usersBase = new RegisteredEmployees();
-        $users = $usersBase->getEmployeesUser()->take(1);
+        $users = $usersBase->getEmployeesUser();
 
       
-      
+        if(!empty($users)){
+            $this->info('Nenhum usuário para criar.');
+            return;
+        }
+
+
       foreach ($users as $user) {
 
 

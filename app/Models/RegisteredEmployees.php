@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Users;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Users;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\DB;
 
 class RegisteredEmployees extends Model
 {
@@ -103,20 +104,26 @@ class RegisteredEmployees extends Model
 
         $users = User::all()->pluck('login')->toArray();
 
+      $demitidos = DB::connection('sqlsrv')
+                ->table('LG_IMPORTA_FUNCIONARIOS_DEMITIDOS')
+                ->select(DB::raw("REPLACE(REPLACE(INSCRICAO_FEDERAL, '.', ''), '-', '') AS CPF"))
+                ->get()
+                ->pluck('CPF')
+                ->flip()
+                ->toArray();
 
         return $this->select(
                 'EMPLOYEES_REPORT_IT.CPF AS LOGIN',
                 'EMPLOYEES_REPORT_IT.CPF AS PASSWORD',
                 'EMPLOYEES_REPORT_IT.NAME',
                 'EMPLOYEES_REPORT_IT.ID_REPORT_IT AS EMPLOYEE_ID'
-
             )
             ->leftJoin('USERS_REPORT_IT', function ($join) {
                 $join->on('EMPLOYEES_REPORT_IT.CPF', '=', 'USERS_REPORT_IT.LOGIN');
-                
-            })->where('USERS_REPORT_IT.LOGIN', null)
-
-            ->get();
+            })
+            ->whereNull('USERS_REPORT_IT.LOGIN')
+            ->get()
+            ->filter(fn($employee) => !isset($demitidos[$employee->LOGIN]));
         
     }    
 
