@@ -7,7 +7,7 @@ use App\Http\Headers;
 use GuzzleHttp\Client;
 use App\Http\BodyToken;
 use App\Console\UrlBase;
-use App\Models\Users;
+use App\Models\RegisteredEmployees;
 use Illuminate\Console\Command;
 
 
@@ -35,8 +35,8 @@ class CreateUser extends Command
         $urlCompleta = $url_base . $command;
 
          
-        $usersBase = new Users();
-        $users = $usersBase->getUsers();
+        $usersBase = new RegisteredEmployees();
+        $users = $usersBase->getEmployeesUser()->take(1);
 
       
       
@@ -74,8 +74,7 @@ class CreateUser extends Command
 
     } catch (\GuzzleHttp\Exception\ClientException $e) {
 
-     
-       
+            
      Logs::createLog($command. " - " . $user->NAME, "erro", date_format(now(), 'd-m-Y H:i:s'));
 
         $this->error(
@@ -83,6 +82,8 @@ class CreateUser extends Command
             $e->getResponse()->getBody()->getContents()
         );
     }
+
+    
 }
 
 

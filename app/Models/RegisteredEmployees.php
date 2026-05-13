@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Users;
+use Illuminate\Foundation\Auth\User;
 
 class RegisteredEmployees extends Model
 {
@@ -99,14 +101,22 @@ class RegisteredEmployees extends Model
 
     public function getEmployeesUser(){
 
+        $users = User::all()->pluck('login')->toArray();
+
 
         return $this->select(
-                'CPF AS LOGIN',
-                'CPF AS PASSWORD',
-                'NAME',
-                'ID_REPORT_IT AS EMPLOYEE_ID'
+                'EMPLOYEES_REPORT_IT.CPF AS LOGIN',
+                'EMPLOYEES_REPORT_IT.CPF AS PASSWORD',
+                'EMPLOYEES_REPORT_IT.NAME',
+                'EMPLOYEES_REPORT_IT.ID_REPORT_IT AS EMPLOYEE_ID'
 
-            )->get();
+            )
+            ->leftJoin('USERS_REPORT_IT', function ($join) {
+                $join->on('EMPLOYEES_REPORT_IT.CPF', '=', 'USERS_REPORT_IT.LOGIN');
+                
+            })->where('USERS_REPORT_IT.LOGIN', null)
+
+            ->get();
         
     }    
 
